@@ -36,32 +36,85 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.event['title']),
+        title: Text(
+          'Event Details', // Title added here
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
         backgroundColor: Colors.deepOrangeAccent,
+        elevation: 4.0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share, color: Colors.white),
+            onPressed: () {
+              // Add share functionality if needed
+            },
+          ),
+        ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.event['title'],
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              widget.event['category'],
-              style: TextStyle(fontSize: 18, color: Colors.indigo),
-            ),
-            SizedBox(height: 10),
-            Text(
-              widget.event['date'],
-              style: TextStyle(fontSize: 16, color: Colors.red),
+            // Event title
+            // Centered Event title
+            Center(
+              child: Text(
+                widget.event['title'],
+                style: TextStyle(
+                  color: Colors.deepOrangeAccent,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28,
+                ),
+              ),
             ),
             SizedBox(height: 20),
+            // Centered Category Section
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.deepOrangeAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Text(
+                  widget.event['category'],
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.deepOrangeAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            // Event date
+            Text(
+              widget.event['date'],
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.redAccent,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            SizedBox(height: 20),
+            // Event description
             Text(
               widget.event['description'],
               style: TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+            SizedBox(height: 40),
+            // Final message
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Have fun and enjoy the event!',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.purpleAccent,
+                ),
+              ),
             ),
           ],
         ),
@@ -70,10 +123,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
         onPressed: _toggleFavorite,
         child: Icon(
           _isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorite ? Colors.red : null,
+          color: _isFavorite ? Colors.white : Colors.deepOrangeAccent,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: _isFavorite ? Colors.red : Colors.white,
+        elevation: 6.0,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

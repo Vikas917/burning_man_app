@@ -76,10 +76,11 @@ class _MapScreensState extends State<MapScreens> {
               height: 80,
               child: GestureDetector(
                 onTap: () => _showMarkerInfo(markerData),
-                child: Column(
-                  children: [
-                    Container(padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-                      decoration: BoxDecoration(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(4),
                           boxShadow: [
@@ -88,23 +89,25 @@ class _MapScreensState extends State<MapScreens> {
                               blurRadius: 4,
                               offset: Offset(0, 2),
                             )
-                          ]
-                      ),
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          ],
+                        ),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.location_on,
-                      color: Colors.redAccent,
-                      size: 40,
-                    )
-                  ],
-                ),
+                      Expanded(
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.redAccent,
+                          size: 40,
+                        ),
+                      ),
+                    ],
+                  )
               )
           )
       );
@@ -120,7 +123,14 @@ class _MapScreensState extends State<MapScreens> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Add Marker"),
+          title: Text(
+            "Add Marker",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepOrangeAccent,
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -153,24 +163,44 @@ class _MapScreensState extends State<MapScreens> {
     );
   }
 
+  // Delete marker function
+  void _deleteMarker(MarkerData markerData) {
+    setState(() {
+      // Remove marker from _markerData and _markers
+      _markerData.removeWhere((item) => item == markerData);
+      _markers.removeWhere((marker) => marker.point == markerData.position);
+    });
+    _saveMarkers(); // Save changes to shared preferences
+  }
+
+
   //Show Marker Info
+  // Show Marker Info with delete option
   void _showMarkerInfo(MarkerData markerData) {
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(markerData.title),
-          content: Text(markerData.description),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.close),
-            ),
-          ],
-        )
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(markerData.title),
+        content: Text(markerData.description),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.close),
+          ),
+          TextButton(
+            onPressed: () {
+              _deleteMarker(markerData);
+              Navigator.pop(context);
+            },
+            child: Text("Delete"),
+          ),
+        ],
+      ),
     );
   }
+
 
   //Search Functionality
   Future<void> _searchPlaces(String query) async {
@@ -331,33 +361,44 @@ class _MapScreensState extends State<MapScreens> {
                 children: [
                   SizedBox(
                     height: 55,
-                    child: TextField(
+                    child: // Beautified TextField and Text styling
+                    TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                          hintText: "Search place...",
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: Icon(Icons.search),
-                          suffixIcon: _isSearching
-                              ? IconButton(
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() {
-                                  _isSearching = false;
-                                  _searchResults = [];
-                                });
-                              }, icon: Icon(Icons.clear))
-                              :  null),
+                        hintText: "Search place...",
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: Icon(Icons.search, color: Colors.deepOrangeAccent),
+                        suffixIcon: _isSearching
+                            ? IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _isSearching = false;
+                              _searchResults = [];
+                            });
+                          },
+                          icon: Icon(Icons.clear, color: Colors.deepOrangeAccent),
+                        )
+                            : null,
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      ),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                       onTap: () {
                         setState(() {
                           _isSearching = true;
                         });
                       },
                     ),
+
                   ),
                   if(_isSearching && _searchResults.isNotEmpty)
                     Container(
@@ -369,7 +410,12 @@ class _MapScreensState extends State<MapScreens> {
                           final place = _searchResults[index];
                           return ListTile(
                             title: Text(
-                              place['display_name'],
+                              place['display"Add Marker"_name'],
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
                             ),
                             onTap: () {
                               final lat = double.parse(place['lat']);

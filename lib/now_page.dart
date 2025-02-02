@@ -6,8 +6,11 @@ class NowPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.pinkAccent[50],
       appBar: AppBar(
+        backgroundColor: Colors.deepOrangeAccent,
         title: const Text("Now Page"),
+        centerTitle: true,
       ),
       body: Center(
         child: Text(

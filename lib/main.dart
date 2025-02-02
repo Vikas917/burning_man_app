@@ -1,10 +1,5 @@
-import 'package:burning_man_app/home_page.dart';
-import 'package:burning_man_app/home_screens.dart';
-import 'package:burning_man_app/map_screens.dart';
-import 'package:burning_man_app/screens/map_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'google_map.dart'; // Import your GoogleMapScreen class
+import 'home_page.dart';
 
 void main() {
   runApp(MyApp());

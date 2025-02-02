@@ -35,8 +35,9 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.orange[50],
       appBar: AppBar(
-        title: Text('Events'),
+        title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.deepOrangeAccent,
         actions: [
           IconButton(
@@ -45,7 +46,7 @@ class _EventsPageState extends State<EventsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SearchPage(events: _events), // Navigate to SearchPage
+                  builder: (context) => SearchPage(events: _events),
                 ),
               );
             },
@@ -73,50 +74,39 @@ class _EventsPageState extends State<EventsPage> {
           itemBuilder: (context, index) {
             final event = _events[index];
             return Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              elevation: 5,
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              elevation: 10,
               child: ListTile(
-                contentPadding: EdgeInsets.all(16),
+                contentPadding: EdgeInsets.all(20),
                 title: Text(
                   event['title'],
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.deepOrangeAccent,
+                  ),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
+                    SizedBox(height: 6),
                     Text(
                       event['category'],
-                      style: TextStyle(color: Colors.indigo),
+                      style: TextStyle(color: Colors.indigo, fontSize: 14),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 6),
                     Text(
                       event['date'],
                       style: TextStyle(fontSize: 14, color: Colors.redAccent),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 12),
                     Text(
                       event['description'].length > 100 ? event['description'].substring(0, 80) + '...' : event['description'],
                       style: TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                   ],
                 ),
-                // trailing: IconButton(
-                //   icon: Icon(
-                //     _favoriteEventIds.contains(event['id']) ? Icons.favorite : Icons.favorite_border,
-                //     color: _favoriteEventIds.contains(event['id']) ? Colors.red : null,
-                //   ),
-                //   onPressed: () {
-                //     setState(() {
-                //       if (_favoriteEventIds.contains(event['id'])) {
-                //         _favoriteEventIds.remove(event['id']);
-                //       } else {
-                //         _favoriteEventIds.add(event['id']);
-                //       }
-                //     });
-                //   },
-                // ),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -142,47 +132,93 @@ class _EventsPageState extends State<EventsPage> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.red[50],
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(3, (index) {
+              bool isSelected = _selectedIndex == index;
+              List<IconData> icons = [
+                Icons.map,
+                Icons.event,
+                Icons.favorite,
+              ];
+              List<String> labels = ["Map", "Events", "Favorites"];
 
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FavoritesPage(
-                  favoriteEventIds: _favoriteEventIds,
-                  events: _events,
-                  onFavoriteToggle: (int eventId) {  },),
-              ),
-            );
-          } else if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MapScreens(),
-              ),
-            );
-          }
-        },
-      ),
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+
+                    if (index == 0) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MapScreens(),
+                        ),
+                      );
+                    } else if (index == 1) {
+                      // Add your Events page navigation here
+                      // Example: Navigator.push(...);
+                    } else if (index == 2) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FavoritesPage(
+                            favoriteEventIds: _favoriteEventIds,
+                            events: _events,
+                            onFavoriteToggle: (int eventId) {
+                              // Handle favorite toggle
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated Icon Container
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        padding: isSelected ? EdgeInsets.symmetric(horizontal: 18, vertical: 4) : EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.deepOrangeAccent : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: AnimatedSize(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: Icon(
+                            icons[index],
+                            color: isSelected ? Colors.black : Colors.orangeAccent,
+                            size: isSelected ? 30 : 26,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5), // Space between icon and text
+                      Text(
+                        labels[index],
+                        style: TextStyle(
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+        )
+
     );
   }
 }
